@@ -1,5 +1,4 @@
-#include "../philo.h"
-#include "utils/utils.h"
+#include "utils.h"
 
 int	check_ok(int ac, char **av)
 {

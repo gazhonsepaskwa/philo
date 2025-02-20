@@ -1,7 +1,11 @@
 #ifndef UTILS_H
 # define UTILS_H
 
-long	ft_atoi(const char *str);
-int		is_extended_digit(char *str);
+#include <unistd.h>
+
+int			is_extended_digit(char *str);
+int			check_ok(int ac, char **av);
+long		ft_atoi(const char *str);
+long long	get_passed_ms(void);
 
 #endif

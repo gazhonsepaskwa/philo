@@ -2,8 +2,7 @@ CC = gcc
 WFLAGS = -Wall -Werror -Wextra -g -g3 -ggdb
 
 SRCDIR = srcs
-OBJDIR = objs
-BONUS_OBJDIR = bonus_objs
+OBJDIR = .objs
 INCDIR = .
 LIBFT_DIR = lib/libft
 
