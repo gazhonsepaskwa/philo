@@ -26,10 +26,17 @@ void	status(t_philo_data *data, char *msg)
 void	habit_eat(t_philo_data *d)
 {
 	status(d , FORK);
-	pthread_mutex_lock(&(d->t->forks[d->id - 1]));
+	if (d->id % 2)
+		pthread_mutex_lock(&(d->t->forks[d->id - 1]));
+	else
+		pthread_mutex_lock(&(d->t->forks[(d->id) % d->t->philo_count]));
 	status(d , FORK);
-	pthread_mutex_lock(&(d->t->forks[(d->id) % d->t->philo_count]));
+	if (d->id % 2)
+		pthread_mutex_lock(&(d->t->forks[(d->id) % d->t->philo_count]));
+	else
+		pthread_mutex_lock(&(d->t->forks[d->id - 1]));
 	status(d , EAT);
+	// last_meal = 
 	msleep(d->t->eat_time);
 	pthread_mutex_unlock(&(d->t->forks[d->id - 1]));
 	pthread_mutex_unlock(&(d->t->forks[(d->id) % d->t->philo_count]));

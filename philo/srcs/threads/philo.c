@@ -16,18 +16,21 @@
 void *philo_core(void *raw_data)
 {
 	t_philo_data	*data;
-	// size_t			i;
+	size_t			i;
 
+	i = 0;
 	data = (t_philo_data *)raw_data;
 	if (data->id % 2 != 0)
 		msleep(data->t->eat_time / 2);
-	// while (i < data->t->max_iter)
-	// {
-
-	// }
-	habit_eat(data);
-	habit_sleep(data);
-	habit_think(data);
+	while (i < data->t->max_iter)
+	{
+		habit_eat(data);
+		i++;
+		if (i == data->t->max_iter)
+			break;
+		habit_sleep(data);
+		habit_think(data);
+	}
 	return (free(data), NULL);
 }
 

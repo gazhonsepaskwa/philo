@@ -19,6 +19,7 @@
 typedef struct s_philo_data
 {
 	int				id;
+	long long		last_meal;
 	struct s_table	*t;
 }					t_philo_data;
 
