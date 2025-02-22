@@ -12,43 +12,76 @@
 
 #include "../../philo.h"
 #include "../utils/utils.h"
+#include <sys/time.h>
+#include <time.h>
 
-void	status(t_philo_data *data, char *msg)
+bool sig_death(t_philo_data* d)
 {
+	pthread_mutex_lock(&d->t->sim_s_lock);
+	if (d->t->simstop)
+	{
+		pthread_mutex_unlock(&d->t->sim_s_lock);
+		return (false);
+	}
+	else
+	{
+		pthread_mutex_unlock(&d->t->sim_s_lock);
+		return (false);
+	}
+}
+
+bool	status(t_philo_data *data, char *msg)
+{
+	if (sig_death(data))
+		return (true);
 	pthread_mutex_lock(&data->t->print);
 	if (CUTE)
 		printf("┃ %-21lld┃ %-4d ┃ %-18s┃\n", get_passed_ms(), data->id, msg);
 	else
 		printf("%lld %d %s\n", get_passed_ms(), data->id, msg);
 	pthread_mutex_unlock(&data->t->print);
+	return(false);
 }
 
-void	habit_eat(t_philo_data *d)
+bool	habit_eat(t_philo_data *d)
 {
-	status(d , FORK);
+	struct timeval	tv;
+	bool			stop;
+
 	if (d->id % 2)
 		pthread_mutex_lock(&(d->t->forks[d->id - 1]));
 	else
 		pthread_mutex_lock(&(d->t->forks[(d->id) % d->t->philo_count]));
-	status(d , FORK);
+	stop = status(d , FORK);
 	if (d->id % 2)
 		pthread_mutex_lock(&(d->t->forks[(d->id) % d->t->philo_count]));
 	else
 		pthread_mutex_lock(&(d->t->forks[d->id - 1]));
-	status(d , EAT);
-	// last_meal = 
+	stop = stop || status(d , FORK);
+	stop = stop || status(d , EAT);
+	gettimeofday(&tv, NULL);
+	pthread_mutex_lock(&d->lm_lock);
+	d->last_meal = ((long long)(tv.tv_sec) *1000) + (tv.tv_usec / 1000);
+	pthread_mutex_unlock(&d->lm_lock);
 	msleep(d->t->eat_time);
 	pthread_mutex_unlock(&(d->t->forks[d->id - 1]));
 	pthread_mutex_unlock(&(d->t->forks[(d->id) % d->t->philo_count]));
+	if (stop)
+		return (true);
+	return (false);
 }
 
-void	habit_sleep(t_philo_data *d)
+bool	habit_sleep(t_philo_data *d)
 {
-	status(d , SLEEP);
+	if (status(d , SLEEP))
+		return (true);
 	msleep(d->t->sleep_time);
+	return (false);
 }
 
-void	habit_think(t_philo_data *d)
+bool	habit_think(t_philo_data *d)
 {
-	status(d , THINK);
+	if (status(d , THINK))
+		return (true);
+	return (false);
 }

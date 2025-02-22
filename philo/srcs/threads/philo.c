@@ -17,20 +17,28 @@ void *philo_core(void *raw_data)
 {
 	t_philo_data	*data;
 	size_t			i;
+	bool			error;
 
 	i = 0;
+	error = false;
 	data = (t_philo_data *)raw_data;
+	data->last_meal = 0;
 	if (data->id % 2 != 0)
 		msleep(data->t->eat_time / 2);
 	while (i < data->t->max_iter)
 	{
-		habit_eat(data);
+		error = error || habit_eat(data);
+		error = error || habit_sleep(data);
 		i++;
 		if (i == data->t->max_iter)
 			break;
-		habit_sleep(data);
-		habit_think(data);
+		error = error || habit_think(data);
+		if (error)
+			break;
 	}
+	pthread_mutex_lock(&data->t->done_lock);
+	data->t->done += 1;
+	pthread_mutex_unlock(&data->t->done_lock);
 	return (free(data), NULL);
 }
 
@@ -46,6 +54,8 @@ int	create_philos(t_table *table)
 		table->philos_d[i] = malloc(sizeof(t_philo_data));
 		table->philos_d[i]->t = table;
 		table->philos_d[i]->id = i + 1;
+		table->philos_d[i]->last_meal = 0;
+		pthread_mutex_init(&table->philos_d[i]->lm_lock, NULL);
 		if (pthread_create(&table->philos[i], NULL, philo_core,
 					 (void *)table->philos_d[i]) != 0)
 			return (0);

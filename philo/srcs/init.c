@@ -40,12 +40,17 @@ t_table *init(char **av)
 	table->death_time = ft_atoi(av[2]);
 	table->eat_time = ft_atoi(av[3]);
 	table->sleep_time = ft_atoi(av[4]);
+	table->simstop = false;
+	table->done = 0;
 	if (av[5])
 		table->max_iter = ft_atoi(av[5]);
 	else
 		table->max_iter = -1;
 	table->forks = malloc(sizeof(pthread_mutex_t) * table->philo_count);
-	if (!table->forks || pthread_mutex_init(&table->main, NULL) != 0)
+	if (!table->forks
+		|| pthread_mutex_init(&table->print, NULL) != 0
+		|| pthread_mutex_init(&table->done_lock, NULL) != 0
+		|| pthread_mutex_init(&table->sim_s_lock, NULL) != 0)
 		return (NULL);
 	if (!init_forks(table))
 		return (NULL);
