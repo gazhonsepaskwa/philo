@@ -24,20 +24,18 @@ int8_t	err(char *msg)
 
 bool check_death(t_table *t, size_t	p)
 {
-	struct timeval	tv;
-	long long		now;
 	bool			out;
+	int		 		now;
 
 	out = false;
-	gettimeofday(&tv, NULL);
-	now = ((long long)(tv.tv_sec) *1000) + (tv.tv_usec / 1000);
+	now = get_passed_ms();
 	pthread_mutex_lock(&t->philos_d[p]->lm_lock);
 	if (now - t->philos_d[p]->last_meal >= t->death_time)
 	{
 		// debug
-		pthread_mutex_lock(&t->print);
-		printf("now : %lld | last_meal :%lld | diff : %lld", now, t->philos_d[p]->last_meal, (now - t->philos_d[p]->last_meal));
-		pthread_mutex_unlock(&t->print);
+		// pthread_mutex_lock(&t->print);
+		// printf("now : %d | last_meal :%d | diff : %d", now, (int)t->philos_d[p]->last_meal, (int)(now - t->philos_d[p]->last_meal));
+		// pthread_mutex_unlock(&t->print);
 		//debug
 
 		out = true;

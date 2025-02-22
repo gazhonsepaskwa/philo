@@ -21,7 +21,7 @@ bool sig_death(t_philo_data* d)
 	if (d->t->simstop)
 	{
 		pthread_mutex_unlock(&d->t->sim_s_lock);
-		return (false);
+		return (true);
 	}
 	else
 	{
@@ -61,7 +61,8 @@ bool	habit_eat(t_philo_data *d)
 	stop = stop || status(d , EAT);
 	gettimeofday(&tv, NULL);
 	pthread_mutex_lock(&d->lm_lock);
-	d->last_meal = ((long long)(tv.tv_sec) *1000) + (tv.tv_usec / 1000);
+	d->last_meal = get_passed_ms();
+	// printf("%lld\n", d->last_meal);
 	pthread_mutex_unlock(&d->lm_lock);
 	msleep(d->t->eat_time);
 	pthread_mutex_unlock(&(d->t->forks[d->id - 1]));
