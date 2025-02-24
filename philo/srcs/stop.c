@@ -21,16 +21,8 @@ bool check_death(t_table *t, size_t	p)
 	out = false;
 	now = get_passed_ms(false);
 	pthread_mutex_lock(&t->philos_d[p]->lm_lock);
-	if (now - t->philos_d[p]->last_meal >= t->death_time)
-	{
-		// debug
-		// pthread_mutex_lock(&t->print);
-		// printf("now : %d | last_meal :%d | diff : %d", now, (int)t->philos_d[p]->last_meal, (int)(now - t->philos_d[p]->last_meal));
-		// pthread_mutex_unlock(&t->print);
-		//debug
-
+	if (now - t->philos_d[p]->last_meal > t->death_time)
 		out = true;
-	}
 	pthread_mutex_unlock(&t->philos_d[p]->lm_lock);
 	return (out);
 }
@@ -56,11 +48,10 @@ void wait_end(t_table *table)
 	bool	stop;
 
 	stop = false;
-	msleep((table->eat_time) + 1); // optimize the time ??
+	msleep((table->eat_time) + 1);
 	while(!stop)
 	{
 		p = -1;
-		msleep(1); // optimize the time
 		while (++p < table->philo_count)
 		{
 			if (check_death(table, p))
@@ -72,6 +63,7 @@ void wait_end(t_table *table)
 		}
 		if (stop == true || philo_done(table))
 			break;
+		msleep(1);
 	}
 	pthread_mutex_lock(&table->sim_s_lock);
 	table->simstop = true;

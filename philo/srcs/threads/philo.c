@@ -22,7 +22,6 @@ void *philo_core(void *raw_data)
 	i = 0;
 	error = false;
 	data = (t_philo_data *)raw_data;
-	data->last_meal = 0;
 	if (data->id % 2 != 0)
 		msleep(data->t->eat_time / 2);
 	while (i < data->t->max_iter)

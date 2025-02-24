@@ -14,7 +14,7 @@
 #define EAT "is eating"
 #define SLEEP "is sleeping"
 #define THINK "is thinking"
-#define DIED "\e[31mdied\e[0m              "
+#define DIED "died"
 #define CUTE 1
 
 // philos data

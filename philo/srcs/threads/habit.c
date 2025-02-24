@@ -43,30 +43,42 @@ bool	status(t_philo_data *data, char *msg)
 	return(false);
 }
 
+void	lock_forks(t_philo_data *d, bool *stop)
+{
+	if (d->id % 2)
+		pthread_mutex_lock(&(d->t->forks[d->id - 1]));
+	else
+		pthread_mutex_lock(&(d->t->forks[(d->id) % d->t->philo_count]));
+	*stop = status(d , FORK);
+	if (d->id % 2)
+		pthread_mutex_lock(&(d->t->forks[(d->id) % d->t->philo_count]));
+	else
+		pthread_mutex_lock(&(d->t->forks[d->id - 1]));
+	*stop = *stop || status(d , FORK);
+
+}
+
 bool	habit_eat(t_philo_data *d)
 {
 	struct timeval	tv;
 	bool			stop;
-
-	if (d->id % 2)
-		pthread_mutex_lock(&(d->t->forks[d->id - 1]));
-	else
-		pthread_mutex_lock(&(d->t->forks[(d->id) % d->t->philo_count]));
-	stop = status(d , FORK);
-	if (d->id % 2)
-		pthread_mutex_lock(&(d->t->forks[(d->id) % d->t->philo_count]));
-	else
-		pthread_mutex_lock(&(d->t->forks[d->id - 1]));
-	stop = stop || status(d , FORK);
+	
+	stop = false;
+	if (d->t->philo_count == 1)
+	{
+		status(d, FORK);
+		msleep(d->t->death_time);
+		return (true);
+	}
+	lock_forks(d, &stop);
 	stop = stop || status(d , EAT);
 	gettimeofday(&tv, NULL);
-	pthread_mutex_lock(&d->lm_lock);
-	d->last_meal = get_passed_ms(false);
-	// printf("%lld\n", d->last_meal);
-	pthread_mutex_unlock(&d->lm_lock);
 	msleep(d->t->eat_time);
 	pthread_mutex_unlock(&(d->t->forks[d->id - 1]));
 	pthread_mutex_unlock(&(d->t->forks[(d->id) % d->t->philo_count]));
+	pthread_mutex_lock(&d->lm_lock);
+	d->last_meal = get_passed_ms(false);
+	pthread_mutex_unlock(&d->lm_lock);
 	if (stop)
 		return (true);
 	return (false);
