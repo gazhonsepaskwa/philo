@@ -2,9 +2,8 @@
 #include <time.h>
 #include <stdbool.h>
 
-long long	get_passed_ms(void)
+long long	get_passed_ms(bool first_it)
 {
-	static bool				first_it = true;
 	struct timeval			tv;
 	static long long		og_ts;
 

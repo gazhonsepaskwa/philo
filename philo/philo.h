@@ -14,8 +14,8 @@
 #define EAT "is eating"
 #define SLEEP "is sleeping"
 #define THINK "is thinking"
-#define DIED "\e[31mdied\e[0m"
-#define CUTE 0
+#define DIED "\e[31mdied\e[0m              "
+#define CUTE 1
 
 // philos data
 typedef struct s_philo_data
@@ -58,4 +58,8 @@ bool	habit_eat(t_philo_data *d);
 bool	habit_sleep(t_philo_data *d);
 bool	habit_think(t_philo_data *d);
 bool	status(t_philo_data *data, char *msg);
+
+// wait 
+void wait_end(t_table *table);
+
 #endif

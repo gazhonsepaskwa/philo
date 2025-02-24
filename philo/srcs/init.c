@@ -54,5 +54,6 @@ t_table *init(char **av)
 		return (NULL);
 	if (!init_forks(table))
 		return (NULL);
+	get_passed_ms(true);
 	return (table);
 }

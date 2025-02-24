@@ -39,7 +39,7 @@ void *philo_core(void *raw_data)
 	pthread_mutex_lock(&data->t->done_lock);
 	data->t->done += 1;
 	pthread_mutex_unlock(&data->t->done_lock);
-	return (free(data), NULL);
+	return (NULL);
 }
 
 int	create_philos(t_table *table)

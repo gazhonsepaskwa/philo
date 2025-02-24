@@ -36,9 +36,9 @@ bool	status(t_philo_data *data, char *msg)
 		return (true);
 	pthread_mutex_lock(&data->t->print);
 	if (CUTE)
-		printf("┃ %-21lld┃ %-4d ┃ %-18s┃\n", get_passed_ms(), data->id, msg);
+		printf("┃ %-21lld┃ %-4d ┃ %-18s┃\n", get_passed_ms(false), data->id, msg);
 	else
-		printf("%lld %d %s\n", get_passed_ms(), data->id, msg);
+		printf("%lld %d %s\n", get_passed_ms(false), data->id, msg);
 	pthread_mutex_unlock(&data->t->print);
 	return(false);
 }
@@ -61,7 +61,7 @@ bool	habit_eat(t_philo_data *d)
 	stop = stop || status(d , EAT);
 	gettimeofday(&tv, NULL);
 	pthread_mutex_lock(&d->lm_lock);
-	d->last_meal = get_passed_ms();
+	d->last_meal = get_passed_ms(false);
 	// printf("%lld\n", d->last_meal);
 	pthread_mutex_unlock(&d->lm_lock);
 	msleep(d->t->eat_time);
