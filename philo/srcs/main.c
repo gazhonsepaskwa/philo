@@ -44,26 +44,21 @@ void	destroy(t_table *table)
 
 int	main(int ac, char **av)
 {
-	t_table	*table;
+	t_table			*table;
+	unsigned int	pdead;
 
 	if (!check_ok(ac, av))
 		return (1);
 	table = init(av);
 	if (!table)
 		return (err("Table init failed"));
-	if (CUTE)
-	{
-		printf("┏━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━┳━━━━━━━━━━━━━━━━━━━┓\n");
-		printf("┃ Elapsed time (in ms) ┃  id  ┃       state       ┃\n");
-		printf("┣━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━╋━━━━━━━━━━━━━━━━━━━┫\n");
-	}
 	if (!create_philos(table))
 		return (err("Philo init failed"));
-	wait_end(table);
+	pdead = wait_end(table);
 	if (!join_philos(table))
 		return (err("Philo join failed"));
-	if (CUTE)
-		printf("┗━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━┻━━━━━━━━━━━━━━━━━━━┛\n");
+	if ((int)pdead != -1)
+		printf("%lld %d %s\n", get_passed_ms(false), pdead, DIED);
 	destroy(table);
 	return (0);
 }

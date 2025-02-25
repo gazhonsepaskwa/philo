@@ -15,32 +15,19 @@
 #include <sys/time.h>
 #include <time.h>
 
-bool sig_death(t_philo_data* d)
-{
-	pthread_mutex_lock(&d->t->sim_s_lock);
-	if (d->t->simstop)
-	{
-		pthread_mutex_unlock(&d->t->sim_s_lock);
-		return (true);
-	}
-	else
-	{
-		pthread_mutex_unlock(&d->t->sim_s_lock);
-		return (false);
-	}
-}
-
 bool	status(t_philo_data *data, char *msg)
 {
-	if (sig_death(data))
-		return (true);
 	pthread_mutex_lock(&data->t->print);
-	if (CUTE)
-		printf("┃ %-21lld┃ %-4d ┃ %-18s┃\n", get_passed_ms(false), data->id, msg);
-	else
-		printf("%lld %d %s\n", get_passed_ms(false), data->id, msg);
+	printf("%lld %d %s\n", get_passed_ms(false), data->id, msg);
 	pthread_mutex_unlock(&data->t->print);
-	return(false);
+	pthread_mutex_lock(&data->t->sim_s_lock);
+	if (data->t->simstop)
+	{
+		pthread_mutex_unlock(&data->t->sim_s_lock);
+		return (true);
+	}
+	pthread_mutex_unlock(&data->t->sim_s_lock);
+	return (false);
 }
 
 void	lock_forks(t_philo_data *d, bool *stop)
@@ -49,20 +36,19 @@ void	lock_forks(t_philo_data *d, bool *stop)
 		pthread_mutex_lock(&(d->t->forks[d->id - 1]));
 	else
 		pthread_mutex_lock(&(d->t->forks[(d->id) % d->t->philo_count]));
-	*stop = status(d , FORK);
+	*stop = status(d, FORK);
 	if (d->id % 2)
 		pthread_mutex_lock(&(d->t->forks[(d->id) % d->t->philo_count]));
 	else
 		pthread_mutex_lock(&(d->t->forks[d->id - 1]));
-	*stop = *stop || status(d , FORK);
-
+	*stop = *stop || status(d, FORK);
 }
 
 bool	habit_eat(t_philo_data *d)
 {
 	struct timeval	tv;
 	bool			stop;
-	
+
 	stop = false;
 	if (d->t->philo_count == 1)
 	{
@@ -71,7 +57,7 @@ bool	habit_eat(t_philo_data *d)
 		return (true);
 	}
 	lock_forks(d, &stop);
-	stop = stop || status(d , EAT);
+	stop = stop || status(d, EAT);
 	gettimeofday(&tv, NULL);
 	msleep(d->t->eat_time);
 	pthread_mutex_unlock(&(d->t->forks[d->id - 1]));
@@ -86,7 +72,7 @@ bool	habit_eat(t_philo_data *d)
 
 bool	habit_sleep(t_philo_data *d)
 {
-	if (status(d , SLEEP))
+	if (status(d, SLEEP))
 		return (true);
 	msleep(d->t->sleep_time);
 	return (false);
@@ -94,7 +80,7 @@ bool	habit_sleep(t_philo_data *d)
 
 bool	habit_think(t_philo_data *d)
 {
-	if (status(d , THINK))
+	if (status(d, THINK))
 		return (true);
 	return (false);
 }

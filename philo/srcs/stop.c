@@ -13,10 +13,10 @@
 #include "../philo.h"
 #include "utils/utils.h"
 
-bool check_death(t_table *t, size_t	p)
+bool	check_death(t_table *t, unsigned int p)
 {
 	bool			out;
-	int		 		now;
+	int				now;
 
 	out = false;
 	now = get_passed_ms(false);
@@ -42,30 +42,31 @@ bool	philo_done(t_table *table)
 	}
 }
 
-void wait_end(t_table *table)
+unsigned int	wait_end(t_table *table)
 {
-	size_t	p;
-	bool	stop;
+	unsigned int	p;
+	bool			stop;
 
 	stop = false;
 	msleep((table->eat_time) + 1);
-	while(!stop)
+	while (!stop)
 	{
 		p = -1;
 		while (++p < table->philo_count)
 		{
 			if (check_death(table, p))
 			{
-				status(table->philos_d[p], DIED);
 				stop = true;
-				break;
+				break ;
 			}
 		}
 		if (stop == true || philo_done(table))
-			break;
-		msleep(1);
+			break ;
 	}
 	pthread_mutex_lock(&table->sim_s_lock);
 	table->simstop = true;
 	pthread_mutex_unlock(&table->sim_s_lock);
+	if (stop)
+		return (p + 1);
+	return (-1);
 }

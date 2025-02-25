@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nalebrun <nalebrun@student.s19.be>        +#+  +:+       +#+         */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/25 13:00:38 by nalebrun          #+#    #+#             */
+/*   Updated: 2025/02/25 13:00:38 by nalebrun         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILO_H
 # define PHILO_H
 
@@ -8,14 +20,13 @@
 # include <stdbool.h>
 
 // utils
-#include "srcs/utils/utils.h"
+# include "srcs/utils/utils.h"
 
-#define FORK "has taken a fork"
-#define EAT "is eating"
-#define SLEEP "is sleeping"
-#define THINK "is thinking"
-#define DIED "died"
-#define CUTE 1
+# define FORK "has taken a fork"
+# define EAT "is eating"
+# define SLEEP "is sleeping"
+# define THINK "is thinking"
+# define DIED "died"
 
 // philos data
 typedef struct s_philo_data
@@ -29,7 +40,6 @@ typedef struct s_philo_data
 // table
 typedef struct s_table
 {
-	// pthread_mutex_t	main;
 	pthread_mutex_t	print;
 	unsigned int	philo_count;
 	unsigned int	eat_time;
@@ -47,19 +57,19 @@ typedef struct s_table
 }					t_table;
 
 //init
-t_table *init(char **av);
-int		create_philos(t_table *table);
-int		create_watcher(t_table *table);
-int		join_philos(t_table *table);
-int		join_watcher(t_table *table);
+t_table			*init(char **av);
+int				create_philos(t_table *table);
+int				create_watcher(t_table *table);
+int				join_philos(t_table *table);
+int				join_watcher(t_table *table);
 
 // habit
-bool	habit_eat(t_philo_data *d);
-bool	habit_sleep(t_philo_data *d);
-bool	habit_think(t_philo_data *d);
-bool	status(t_philo_data *data, char *msg);
+bool			habit_eat(t_philo_data *d);
+bool			habit_sleep(t_philo_data *d);
+bool			habit_think(t_philo_data *d);
+bool			status(t_philo_data *data, char *msg);
 
 // wait 
-void wait_end(t_table *table);
+unsigned int	wait_end(t_table *table);
 
 #endif

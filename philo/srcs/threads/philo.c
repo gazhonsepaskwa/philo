@@ -13,7 +13,7 @@
 #include "../../philo.h"
 #include "../utils/utils.h"
 
-void *philo_core(void *raw_data)
+void	*philo_core(void *raw_data)
 {
 	t_philo_data	*data;
 	size_t			i;
@@ -30,10 +30,10 @@ void *philo_core(void *raw_data)
 		error = error || habit_sleep(data);
 		i++;
 		if (i == data->t->max_iter)
-			break;
+			break ;
 		error = error || habit_think(data);
 		if (error)
-			break;
+			break ;
 	}
 	pthread_mutex_lock(&data->t->done_lock);
 	data->t->done += 1;
@@ -56,15 +56,14 @@ int	create_philos(t_table *table)
 		table->philos_d[i]->last_meal = 0;
 		pthread_mutex_init(&table->philos_d[i]->lm_lock, NULL);
 		if (pthread_create(&table->philos[i], NULL, philo_core,
-					 (void *)table->philos_d[i]) != 0)
+				(void *)table->philos_d[i]) != 0)
 			return (0);
 		i++;
 	}
 	return (1);
 }
 
-
-int join_philos(t_table *table)
+int	join_philos(t_table *table)
 {
 	size_t	i;
 

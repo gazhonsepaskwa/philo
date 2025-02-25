@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nalebrun <nalebrun@student.s19.be>        +#+  +:+       +#+         */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/25 13:07:14 by nalebrun          #+#    #+#             */
+/*   Updated: 2025/02/25 13:07:14 by nalebrun         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef UTILS_H
 # define UTILS_H
 
-#include <unistd.h>
-#include <stdbool.h>
+# include <unistd.h>
+# include <stdbool.h>
 
 int			is_extended_digit(char *str);
 int			check_ok(int ac, char **av);

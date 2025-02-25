@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "../philo.h"
 #include "utils/utils.h"
 
@@ -28,9 +27,9 @@ int	init_forks(t_table *table)
 	return (1);
 }
 
-t_table *init(char **av)
+t_table	*init(char **av)
 {
-	t_table *table;
+	t_table	*table;
 
 	table = malloc(sizeof(t_table));
 	if (!table)
@@ -42,10 +41,9 @@ t_table *init(char **av)
 	table->sleep_time = ft_atoi(av[4]);
 	table->simstop = false;
 	table->done = 0;
+	table->max_iter = -1;
 	if (av[5])
 		table->max_iter = ft_atoi(av[5]);
-	else
-		table->max_iter = -1;
 	table->forks = malloc(sizeof(pthread_mutex_t) * table->philo_count);
 	if (!table->forks
 		|| pthread_mutex_init(&table->print, NULL) != 0
