@@ -16,7 +16,7 @@
 bool	check_death(t_table *t, unsigned int p)
 {
 	bool			out;
-	int				now;
+	long long int	now;
 
 	out = false;
 	now = get_passed_ms(false);

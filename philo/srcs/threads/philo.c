@@ -48,9 +48,13 @@ int	create_philos(t_table *table)
 	i = 0;
 	table->philos = malloc(sizeof(pthread_t) * table->philo_count);
 	table->philos_d = malloc(sizeof(t_philo_data *) * table->philo_count);
+	if (!table->philos || !table->philos_d)
+		return (0);
 	while (i < table->philo_count)
 	{
 		table->philos_d[i] = malloc(sizeof(t_philo_data));
+		if (!table->philos_d[i])
+			return (0);
 		table->philos_d[i]->t = table;
 		table->philos_d[i]->id = i + 1;
 		table->philos_d[i]->last_meal = 0;

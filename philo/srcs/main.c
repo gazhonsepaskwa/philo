@@ -47,7 +47,7 @@ int	main(int ac, char **av)
 	t_table			*table;
 	unsigned int	pdead;
 
-	if (!check_ok(ac, av))
+	if (check_ko(ac, av))
 		return (1);
 	table = init(av);
 	if (!table)
@@ -55,10 +55,10 @@ int	main(int ac, char **av)
 	if (!create_philos(table))
 		return (err("Philo init failed"));
 	pdead = wait_end(table);
-	if (!join_philos(table))
-		return (err("Philo join failed"));
 	if ((int)pdead != -1)
 		printf("%lld %d %s\n", get_passed_ms(false), pdead, DIED);
+	if (!join_philos(table))
+		return (err("Philo join failed"));
 	destroy(table);
 	return (0);
 }
