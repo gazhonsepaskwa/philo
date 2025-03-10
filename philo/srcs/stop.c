@@ -55,7 +55,7 @@ unsigned int	wait_end(t_table *table)
 	bool			stop;
 
 	stop = false;
-	msleep((table->eat_time) + 1);
+	msleep(1);
 	while (!stop)
 	{
 		p = -1;
