@@ -22,23 +22,32 @@ int8_t	err(char *msg)
 	return (1);
 }
 
+void	ft_free(void *var)
+{
+	if (var)
+		free(var);
+}
+
 void	destroy(t_table *table)
 {
 	size_t	i;
 
+	join_philos(table);
 	pthread_mutex_destroy(&table->sim_s_lock);
 	pthread_mutex_destroy(&table->done_lock);
 	pthread_mutex_destroy(&table->print);
 	i = -1;
-	while (++i < table->philo_count)
+	while (table->philos_d && ++i < table->philo_count)
 	{
-		pthread_mutex_destroy(&table->forks[i]);
 		pthread_mutex_destroy(&table->philos_d[i]->lm_lock);
-		free(table->philos_d[i]);
+		ft_free(table->philos_d[i]);
 	}
-	free(table->philos);
-	free(table->forks);
-	free(table->philos_d);
+	i = -1;
+	while (table->forks && ++i < table->philo_count)
+		pthread_mutex_destroy(&table->forks[i]);
+	ft_free(table->philos);
+	ft_free(table->forks);
+	ft_free(table->philos_d);
 	free(table);
 }
 
@@ -46,20 +55,20 @@ int	main(int ac, char **av)
 {
 	t_table			*table;
 	unsigned int	pdead;
+	bool			e;
 
+	e = false;
 	if (check_ko(ac, av))
 		return (1);
-	table = init(av);
-	if (!table)
-		return (err("Table init failed"));
+	table = init(av, &e);
+	if (e)
+		return (destroy(table), err("Table init failed; exiting"));
 	if (!create_philos(table))
-		return (err("Philo init failed"));
+		return (destroy(table), err("A thread creation failed; exiting"));
 	pdead = wait_end(table);
 	(void)pdead;
 	if ((int)pdead != -1)
 		printf("%lld %d %s\n", get_passed_ms(false), pdead, DIED);
-	if (!join_philos(table))
-		return (err("Philo join failed"));
 	destroy(table);
 	return (0);
 }

@@ -27,7 +27,7 @@ int	init_forks(t_table *table)
 	return (1);
 }
 
-t_table	*init(char **av)
+t_table	*init(char **av, bool *e)
 {
 	t_table	*table;
 
@@ -49,9 +49,9 @@ t_table	*init(char **av)
 		|| pthread_mutex_init(&table->print, NULL) != 0
 		|| pthread_mutex_init(&table->done_lock, NULL) != 0
 		|| pthread_mutex_init(&table->sim_s_lock, NULL) != 0)
-		return (NULL);
+		*e = true;
 	if (!init_forks(table))
-		return (NULL);
+		*e = true;
 	get_passed_ms(true);
 	return (table);
 }

@@ -23,7 +23,7 @@ void	*philo_core(void *raw_data)
 	error = false;
 	data = (t_philo_data *)raw_data;
 	if (data->id % 2 != 0)
-		msleep(1);
+		msleep(data->t->eat_time / 2);
 	while (i < data->t->max_iter)
 	{
 		error = error || habit_eat(data);
@@ -70,12 +70,19 @@ int	create_philos(t_table *table)
 int	join_philos(t_table *table)
 {
 	size_t	i;
+	int		attempt;
 
 	i = 0;
 	while (i < table->philo_count)
 	{
-		if (pthread_join(table->philos[i], NULL))
-			return (0);
+		attempt = 1;
+		while (pthread_join(table->philos[i], NULL) && attempt < 6)
+		{
+			printf("\033[31m%s (%d/5)\033[0m\n", "Error joining a thread; \
+attempting again in a sec...", attempt);
+			msleep(1000);
+			attempt++;
+		}
 		i++;
 	}
 	return (1);
