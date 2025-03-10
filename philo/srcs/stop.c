@@ -42,6 +42,13 @@ bool	philo_done(t_table *table)
 	}
 }
 
+static void	stop_sim(t_table *table)
+{
+	pthread_mutex_lock(&table->sim_s_lock);
+	table->simstop = true;
+	pthread_mutex_unlock(&table->sim_s_lock);
+}
+
 unsigned int	wait_end(t_table *table)
 {
 	unsigned int	p;
@@ -62,10 +69,9 @@ unsigned int	wait_end(t_table *table)
 		}
 		if (stop == true || philo_done(table))
 			break ;
+		usleep(100);
 	}
-	pthread_mutex_lock(&table->sim_s_lock);
-	table->simstop = true;
-	pthread_mutex_unlock(&table->sim_s_lock);
+	stop_sim(table);
 	if (stop)
 		return (p + 1);
 	return (-1);
