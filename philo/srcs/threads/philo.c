@@ -23,7 +23,7 @@ void	*philo_core(void *raw_data)
 	error = false;
 	data = (t_philo_data *)raw_data;
 	if (data->id % 2 != 0)
-		msleep(data->t->eat_time / 2);
+		msleep(1);
 	while (i < data->t->max_iter)
 	{
 		error = error || habit_eat(data);

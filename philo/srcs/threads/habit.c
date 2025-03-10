@@ -23,24 +23,24 @@ bool	status(t_philo_data *data, char *msg)
 		pthread_mutex_unlock(&data->t->sim_s_lock);
 		return (true);
 	}
-	pthread_mutex_unlock(&data->t->sim_s_lock);
 	pthread_mutex_lock(&data->t->print);
 	printf("%lld %d %s\n", get_passed_ms(false), data->id, msg);
 	pthread_mutex_unlock(&data->t->print);
+	pthread_mutex_unlock(&data->t->sim_s_lock);
 	return (false);
 }
 
 void	lock_forks(t_philo_data *d, bool *stop)
 {
-	// if (d->id % 2)
+	if (d->id % 2)
 		pthread_mutex_lock(&(d->t->forks[d->id - 1]));
-	// else
-		// pthread_mutex_lock(&(d->t->forks[(d->id) % d->t->philo_count]));
-	*stop = status(d, FORK);
-	// if (d->id % 2)
+	else
 		pthread_mutex_lock(&(d->t->forks[(d->id) % d->t->philo_count]));
-	// else
-		// pthread_mutex_lock(&(d->t->forks[d->id - 1]));
+	*stop = status(d, FORK);
+	if (d->id % 2)
+		pthread_mutex_lock(&(d->t->forks[(d->id) % d->t->philo_count]));
+	else
+		pthread_mutex_lock(&(d->t->forks[d->id - 1]));
 	*stop = *stop || status(d, FORK);
 }
 
@@ -82,5 +82,6 @@ bool	habit_think(t_philo_data *d)
 {
 	if (status(d, THINK))
 		return (true);
+	msleep(1);
 	return (false);
 }

@@ -55,6 +55,7 @@ int	main(int ac, char **av)
 	if (!create_philos(table))
 		return (err("Philo init failed"));
 	pdead = wait_end(table);
+	(void)pdead;
 	if ((int)pdead != -1)
 		printf("%lld %d %s\n", get_passed_ms(false), pdead, DIED);
 	if (!join_philos(table))
