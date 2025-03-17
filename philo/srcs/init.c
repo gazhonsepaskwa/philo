@@ -13,7 +13,7 @@
 #include "../philo.h"
 #include "utils/utils.h"
 
-int	init_forks(t_table *table)
+int	init_forks(t_table *table, int *e)
 {
 	size_t	i;
 
@@ -21,13 +21,16 @@ int	init_forks(t_table *table)
 	while (i < table->philo_count)
 	{
 		if (pthread_mutex_init(&table->forks[i], NULL) != 0)
+		{
+			*e = i;
 			return (0);
+		}
 		i++;
 	}
 	return (1);
 }
 
-t_table	*init(char **av, bool *e)
+t_table	*init(char **av, int *e)
 {
 	t_table	*table;
 
@@ -49,9 +52,9 @@ t_table	*init(char **av, bool *e)
 		|| pthread_mutex_init(&table->print, NULL) != 0
 		|| pthread_mutex_init(&table->done_lock, NULL) != 0
 		|| pthread_mutex_init(&table->sim_s_lock, NULL) != 0)
-		*e = true;
-	if (!init_forks(table))
-		*e = true;
+		*e = -1;
+	if (!(*e) && table->forks)
+		init_forks(table, e);
 	get_passed_ms(true);
 	return (table);
 }

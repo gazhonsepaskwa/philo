@@ -57,7 +57,8 @@ typedef struct s_table
 }					t_table;
 
 //init
-t_table			*init(char **av, bool *e);
+t_table			*init(char **av, int *e);
+int8_t			err(char *msg);
 int				create_philos(t_table *table);
 int				create_watcher(t_table *table);
 int				join_philos(t_table *table);

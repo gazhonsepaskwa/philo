@@ -76,13 +76,18 @@ int	join_philos(t_table *table)
 	while (i < table->philo_count)
 	{
 		attempt = 1;
-		while (pthread_join(table->philos[i], NULL) && attempt < 6)
+		if (table->philos_d && table->philos_d[i])
 		{
-			printf("\033[31m%s (%d/5)\033[0m\n", "Error joining a thread; \
+			while (pthread_join(table->philos[i], NULL) && attempt < 6)
+			{
+				printf("\033[31m%s (%d/5)\033[0m\n", "Error joining a thread; \
 attempting again in a sec...", attempt);
-			msleep(1000);
-			attempt++;
+				msleep(1000);
+				attempt++;
+			}
 		}
+		else
+			break ;
 		i++;
 	}
 	return (1);
